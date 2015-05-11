@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin>
+<name>epub2azw</name>
+<type>output</type>
+<author>turbulent</author>
+<description>Output to Amazon azw3 format</description>
+<engine>python2.7</engine>
+<version>0.3.94</version>
+<oslist>win</oslist>
+</plugin>
