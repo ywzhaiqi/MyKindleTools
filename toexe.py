@@ -11,12 +11,14 @@ py2exe_options = {
         "compressed": 1,
         "optimize": 2,
         "ascii": 0,
-        "bundle_files": 1
+        "bundle_files": 1,
+        #"build_base": "",
+        #"dist_dir": "bin",
+        "dll_excludes": ["w9xpopen.exe"]
         }
 setup(
-    console = ["kindleunpack.py", "kindlestrip.py", "dualmetafix_mmap.py", 'kindleFixCoverBySend.py'],
-    # console = ["kindlestrip.py"],
+    console = ["kindleunpack.py", "kindlestrip.py", "dualmetafix_mmap.py", "kindleFixCoverBySend.py"],
     #windows = ["kindleShowHead.py"],
     #zipfile = None,
-    options = {'py2exe': py2exe_options}
+    options = {"py2exe": py2exe_options}
     )

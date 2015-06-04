@@ -239,7 +239,7 @@ if __name__ == "__main__":
             file(outfile, 'wb').write(strippedFile.getResult())
             print("Header Bytes: {0}".format(binascii.b2a_hex(strippedFile.getHeader())))
             if len(argv) == 4:
-                file(argv[3], 'wb').write(strippedFile.getStrippedData())
+                file(pathof(argv[3]), 'wb').write(strippedFile.getStrippedData())
         except StripException as e:
             print("Error: {0}".format(e))
             sys.exit(1)

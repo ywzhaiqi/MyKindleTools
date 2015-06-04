@@ -50,7 +50,7 @@ def clean(workDir):
 def main():
     disk = findKindleDisk()
     if disk:
-        documentDir = os.path.join(disk, 'document')
+        documentDir = os.path.join(disk, 'documents')
         clean(documentDir)
 
 if __name__ == '__main__':
