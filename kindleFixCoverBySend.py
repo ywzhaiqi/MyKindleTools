@@ -5,7 +5,7 @@
 import os
 import glob
 import re
-import StringIO
+from io import BytesIO
 from PIL import Image
 from lib.kindlelib import findKindleDisk
 from kindleunpack.mobi_sectioner import Sectionizer
@@ -23,7 +23,23 @@ def findCoverFromImg(kb):
     '''
     # Frontcover.jpg
 
-def setThumbnailByManual(filePath, thumbPath):
+def getCoverImage(fileOrPath, doctype='PDOC'):
+    try:
+        cover = Image.open(fileOrPath).convert('RGB')
+        cover.thumbnail(THUMB_MAX_SIZE)
+        # cover.thumbnail((283, 415), Image.ANTIALIAS)
+
+        if doctype == 'PDOC':
+            pdoc_cover = Image.new("L", (cover.size[0], cover.size[1]+55),
+                                   "white")
+            pdoc_cover.paste(cover, (0, 0))
+            return pdoc_cover
+        else:
+            return cover
+    except:
+        print('Convert cover Error: %s' % thumbPath)
+
+def getCoverByManual(filePath):
     azw3_name = os.path.basename(filePath)
 
     imgPath = None
@@ -33,18 +49,11 @@ def setThumbnailByManual(filePath, thumbPath):
         # print('请加上引号')
         pass
 
-    if not imgPath:
-        return False
+    cover = None
+    if imgPath and os.path.isfile(imgPath):
+        cover = getCoverImage(imgPath)
 
-    if not os.path.isfile(imgPath):
-        print('The cover image is not correct, skipped')
-    else:
-        with open(imgPath, 'rb') as f:
-            cover = Image.open(f).convert('RGB')
-            cover.thumbnail(THUMB_MAX_SIZE)
-            cover.save(thumbPath)
-
-    return True
+    return cover
 
 def saveThumbnail(filePath, thumbPath):
     # 移除 .partial结尾的缺失图片
@@ -59,26 +68,20 @@ def saveThumbnail(filePath, thumbPath):
     mh = MobiHeader(sect,0)
     metadata = mh.getMetaData()
 
-    isOK = False
+    cover = None
 
     # get cover data
     beg = mh.firstresource
     cover_offset = int(metadata.get('CoverOffset', ['-1'])[0])
     if cover_offset != -1:
         data = sect.loadSection(beg + cover_offset)
+        cover = getCoverImage(BytesIO(data))
 
-        try:
-            cover = Image.open(StringIO.StringIO(data)).convert('RGB')
-            cover.thumbnail(THUMB_MAX_SIZE)
-            cover.save(thumbPath)
-            isOK = True
-        except:
-            print('Convert cover Error: %s' % thumbPath)
+    if not cover and SET_COVER_BY_MANUAL:
+        cover = getCoverByManual(filePath)
 
-    if not isOK and SET_COVER_BY_MANUAL:
-        isOK = setThumbnailByManual(filePath, thumbPath)
-
-    if isOK:
+    if cover:
+        cover.save(thumbPath)
         print('Saved thumbnail: %s' % thumbPath)
     
     print('')
@@ -86,7 +89,7 @@ def saveThumbnail(filePath, thumbPath):
 def findNoThumbnailBook():
     pattern = re.compile(r'_([a-zA-Z1-9]{32})')
 
-    for filePath in glob.glob('documents\\*.azw3'):
+    for filePath in glob.glob('documents\\*.azw3') + glob.glob('documents\\*.azw'):
         filename = os.path.basename(filePath)
         match = pattern.search(filename)
         if match:

@@ -65,7 +65,7 @@ def getHead(argv=utf8_argv()):
         if sect.ident != 'BOOKMOBI' and sect.ident != 'TEXtREAd':
             raise 'Invalid file format'
         mh = MobiHeader(sect,0)
-        headers = mh.get_exth()
+        headers = mh.get_exth(ext[1:])
 
     guiShow(headers, infile)
 

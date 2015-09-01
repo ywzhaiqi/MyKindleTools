@@ -616,7 +616,7 @@ class MobiHeader:
             pos += size
         return
 
-    def get_exth(self):
+    def get_exth(self, ext=''):
         # determine text encoding
         codec=self.codec
         if (not self.hasExth) or (self.exth_length) == 0 or (self.exth == ''):
@@ -625,7 +625,16 @@ class MobiHeader:
         pos = 12
 
         outArr = []
+        # 加上额外的信息
+        ftype = 'azw3' if self.isK8() else 'mobi'
+        if ext and ext != ftype:
+            ftype += u', 跟后缀 %s 不符' % ext
+        isEncrypted = u'未破解' if self.isEncrypted() else ''
+
+        outArr.append(u'类型: %s %s' % (ftype, isEncrypted))
+        outArr.append('')
         outArr.append("Key Decription                     Value")
+
         for _ in range(num_items):
             id, size = struct.unpack('>LL', self.exth[pos:pos+8])
             contentsize = size-8

@@ -276,6 +276,10 @@ class DualMobiMetaFix:
             rec0 = del_exth(rec0, 504)
             rec0 = add_exth(rec0, 113, asin)
             rec0 = add_exth(rec0, 504, asin)
+
+        # 增加 Clipping Limit 为 100，但对选取单词无作用
+        # rec0 = add_exth(rec0, 401, "d")
+
         replacesection(self.datain, 0, rec0)
 
         ver = getint(self.datain_rec0,mobi_version)
@@ -347,6 +351,8 @@ def main(argv=utf8_argv()):
     asin = args[0]
     infile = args[1]
     outfile = args[2]
+    if not outfile:
+        outfile = infile
     print "ASIN:   ", asin
     print "Input:  ", infile
     print "Output: ", outfile
