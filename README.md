@@ -33,7 +33,9 @@
 
 ### kindleShowHead
 
-显示 mobi 文件的信息
+简单地显示 mobi、azw3 文件的信息。
+
+使用方式： `pythonw kindleShowHead.py "XXX"`
 
 ## 构建 exe
 
