@@ -16,6 +16,8 @@
 
 精简 kindlegen 生成的 mobi。根据[原版](http://github.com/jefftriplett/kindlestrip)修正了 kindlestrip 输入路径中存在非 gbk 字符从而无法读取的问题。
 
+注：用 kindlegen 生成 mobi 可添加参数 `-dont_append_source`
+
 ### dualmetafix_mmap
 
 给 mobi/azw3 加上 ASIN 和 EBOK，这样手动放入 mobi 没有 "个人文档" 字样，发送到 kindle 可显示封面。
@@ -35,7 +37,7 @@
 
 简单地显示 mobi、azw3 文件的信息。
 
-使用方式： `pythonw kindleShowHead.py "XXX"`
+使用方式： `pythonw kindleShowHead.py "XX路径"`
 
 ## 构建 exe
 

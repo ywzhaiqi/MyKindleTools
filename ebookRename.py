@@ -13,16 +13,18 @@ def getMobiFileName(infile):
     if sect.ident != 'BOOKMOBI' and sect.ident != 'TEXtREAd':
         raise 'Invalid file format'
     mh = MobiHeader(sect,0)
-    
+
     # Error: Updated_Title 可能不存在，但 calibre 能得到标题
-    title = mh.metadata.get('Updated_Title')
-    if not title:
+    titles = mh.metadata.get('Updated_Title')
+    if not titles:
         print('无法得到标题')
         return
 
+    title = titles[0]
+
     title = title.decode(mh.codec)
-    print(title)
-    author = ['、'].join([au.decode(mh.codec) for au in mh.metadata['Creator']])
+    print('New Title: %s' % title)
+    author = '、'.join([au.decode(mh.codec) for au in mh.metadata['Creator']])
 
     return '%s - %s' % (title, author)
 
