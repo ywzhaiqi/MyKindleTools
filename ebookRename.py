@@ -23,13 +23,14 @@ def getMobiFileName(infile):
     title = titles[0]
 
     title = title.decode(mh.codec)
-    print('New Title: %s' % title)
     author = '、'.join([au.decode(mh.codec) for au in mh.metadata['Creator']])
 
     return '%s - %s' % (title, author)
 
 def renameOneBook(infile):
-    ext = os.path.splitext(infile)[1]
+    parentDir = os.path.dirname(infile)
+    oldName = os.path.basename(infile)
+    ext = os.path.splitext(oldName)[1]
 
     newName = None
     if ext in ['.epub']:
@@ -38,7 +39,13 @@ def renameOneBook(infile):
         newName = getMobiFileName(infile)
 
     if newName:
-        os.rename(infile, newName + ext)
+        newName += ext
+        if newName == oldName:
+            return
+
+        os.chdir(parentDir.decode('utf-8').encode('gbk'))
+        print('%s -> %s' % (oldName, newName))
+        os.rename(oldName, newName)
 
 def main(argv=utf8_argv()):
     if len(argv) == 1:
